@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+  www: 
+    build:
+      context: ./www   
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_USER: web
+      MYSQL_PASSWORD: example
+      MYSQL_DATABASE: web
+      MYSQL_SERVER: db
+
+  websockets: 
+    build:
+      context: ./websockets
+    ports:
+      - 8081:8081
+
+  db:
+    build:
+      context: ./db   
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: web
+      MYSQL_PASSWORD: example
+      MYSQL_DATABASE: web
+    volumes:
+      - mysql-datavolume:/var/lib/mysql
+      
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8085:8080
+      
+  nginx-with-ssl:
+    build:
+      context: ./nginx-with-ssl   
+    ports:
+      - 443:443
+
+volumes:
+  mysql-datavolume:
